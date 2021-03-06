@@ -1,0 +1,5 @@
+endian : "<u2"
+height, width : 1084, 1920
+x0, x1, y0, y1 : 0, 1280, 3, 1026
+files_location : r"C:\Users\Tzvi\Documents\programming\RawImages"
+file_name : r"00040.raw"
