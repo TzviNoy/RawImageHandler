@@ -1,7 +1,11 @@
 import os
 import numpy as np
 
-path = os.path.join(files_location, file_name)
-data = np.fromfile(path, endian, height * width)
-image = data.reshape(height, width)
-cut_image = image[y0:y1, x0:x1]
+
+def data_loading(configuration):
+    path = os.path.join(configuration["files_location"], configuration["file_name"])
+    data = np.fromfile(path, configuration["endian"], configuration["dimensions"][1] * configuration["dimensions"][0])
+    image = data.reshape(configuration["dimensions"][0], configuration["dimensions"][1])
+    cut_image = image[configuration["cut_values"][2]:configuration["cut_values"][3],
+                      configuration["cut_values"][0]:configuration["cut_values"][1]]
+    return cut_image
