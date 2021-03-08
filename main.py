@@ -1,2 +1,5 @@
+import image_processing
+
+
 if __name__ == "__main__":
-    pass
+    image_processing
