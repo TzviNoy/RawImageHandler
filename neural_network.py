@@ -1,31 +1,24 @@
-import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torch.optim as optim
+import matplotlib.pyplot as plt
 
 
 class Net(nn.Module):
 
     def __init__(self):
         super(Net, self).__init__()
-        # 1 input image channel, 6 output channels, 3x3 square convolution
-        # kernel
-        self.conv1 = nn.Conv2d(1, 6, 3)
-        self.conv2 = nn.Conv2d(6, 16, 3)
         # an affine operation: y = Wx + b
-        self.fc1 = nn.Linear(16 * 6 * 6, 120)  # 6*6 from image dimension 
-        self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 10)
+        self.fc1 = nn.Linear(16, 8)
+        self.fc2 = nn.Linear(8, 4)
+        self.fc3 = nn.Linear(4, 2)
+        self.fc4 = nn.Linear(2, 1)
 
     def forward(self, x):
-        # Max pooling over a (2, 2) window
-        x = F.max_pool2d(F.relu(self.conv1(x)), (2, 2))
-        # If the size is a square you can only specify a single number
-        x = F.max_pool2d(F.relu(self.conv2(x)), 2)
         x = x.view(-1, self.num_flat_features(x))
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
-        x = self.fc3(x)
+        x = F.relu(self.fc3(x))
+        x = self.fc4(x)
         return x
 
     def num_flat_features(self, x):
@@ -35,103 +28,8 @@ class Net(nn.Module):
             num_features *= s
         return num_features
 
-
-net = Net()
-print(net)
-
-params = list(net.parameters())
-print(len(params))
-print(params[0].size())  # conv1's .weight
-
-input = torch.randn(1, 1, 32, 32)
-out = net(input)
-print(out)
-
-net.zero_grad()
-out.backward(torch.randn(1, 10))
-
-output = net(input)
-target = torch.randn(10)  # a dummy target, for example
-target = target.view(1, -1)  # make it the same shape as output
-criterion = nn.MSELoss()
-
-loss = criterion(output, target)
-print(loss)
-
-print(loss.grad_fn)  # MSELoss
-print(loss.grad_fn.next_functions[0][0])  # Linear
-print(loss.grad_fn.next_functions[0][0].next_functions[0][0])  # ReLU
-
-
-net.zero_grad()     # zeroes the gradient buffers of all parameters
-
-print('conv1.bias.grad before backward')
-print(net.conv1.bias.grad)
-
-loss.backward()
-
-print('conv1.bias.grad after backward')
-print(net.conv1.bias.grad)
-
-# create your optimizer
-optimizer = optim.SGD(net.parameters(), lr=0.01)
-
-# in your training loop:
-optimizer.zero_grad()   # zero the gradient buffers
-output = net(input)
-loss = criterion(output, target)
-loss.backward()
-optimizer.step()    # Does the update
-
-
-num_of_iteration = 100
-learning_Rate = 1e-6
-model = net()
-
-# Construct our loss function and an Optimizer. The call to model.parameters()
-# in the SGD constructor will contain the learnable parameters of the nn.Linear
-# module which is members of the model.
-criterion = torch.nn.MSELoss(reduction='sum')
-optimizer = torch.optim.SGD(model.parameters(), lr=1e-6)
-
-for iteration in range(num_of_iteration):
-    y_pred = model(x)
-
-    # Compute and print loss
-    loss = criterion(y_pred, y)
-    if iteration % 100 == 99:
-        print(iteration, loss.item())
-
-    # Zero gradients, perform a backward pass, and update the weights.
-    optimizer.zero_grad()
-    loss.backward()
-    optimizer.step()
-
-    print(f'Result: {model.string()}')
-
-
-class Polynomial3(torch.nn.Module):
-    def __init__(self):
-        """
-        In the constructor we instantiate four parameters and assign them as
-        member parameters.
-        """
-        super().__init__()
-        self.a = torch.nn.Parameter(torch.randn(()))
-        self.b = torch.nn.Parameter(torch.randn(()))
-        self.c = torch.nn.Parameter(torch.randn(()))
-        self.d = torch.nn.Parameter(torch.randn(()))
-
-    def forward(self, x):
-        """
-        In the forward function we accept a Tensor of input data and we must return
-        a Tensor of output data. We can use Modules defined in the constructor as
-        well as arbitrary operators on Tensors.
-        """
-        return self.a + self.b * x + self.c * x ** 2 + self.d * x ** 3
-
-    def string(self):
-        """
-        Just like any class in Python, you can also define custom method on PyTorch modules
-        """
-        return f'y = {self.a.item()} + {self.b.item()} x + {self.c.item()} x^2 + {self.d.item()} x^3'
+    def show_predict(self, height, width, test, model):
+        img = model(test)
+        img = img.reshape(height, width)
+        plt.imshow(img, cmap='gray')
+        plt.show()

@@ -16,7 +16,7 @@ config2["file_name"] = r"00039.raw"
 train_image = data_loading(config1)
 test_image = data_loading(config2)
 
-switched_bytes = data_preprocessing(train_image)
+switched_bytes, formatted = data_preprocessing(train_image)
 bottom, top = np.percentile(train_image, (1, 99))
 clipped_image = np.clip(switched_bytes, bottom, top)
 normalized_image = exposure.rescale_intensity(clipped_image)
