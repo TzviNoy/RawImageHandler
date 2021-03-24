@@ -1,3 +1,6 @@
+from typing import Tuple
+
+import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
@@ -28,8 +31,8 @@ class Net(nn.Module):
             num_features *= s
         return num_features
 
-    def show_predict(self, height, width, test, model):
-        img = model(test)
-        img = img.reshape(height, width)
+    def show_predict(self, image_shape: Tuple, test):
+        img = self(test)
+        img = img.reshape(image_shape).detach().numpy()
         plt.imshow(img, cmap='gray')
         plt.show()
