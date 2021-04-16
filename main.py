@@ -11,7 +11,6 @@ if __name__ == "__main__":
     path = os.getcwd()
 
     load_config_file(os.path.join(path, "configuration.yaml"))
-
     switched_bytes, train_data = data_preprocessing(train_image)
     test_switched_bytes, test_data = data_preprocessing(test_image)
     bottom, top = np.percentile(train_image, (1, 99))
