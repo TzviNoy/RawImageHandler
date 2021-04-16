@@ -2,6 +2,7 @@ import os
 import torch
 import numpy as np
 
+from skimage import exposure
 from load_config import load_config_file
 
 
@@ -9,8 +10,11 @@ class DataHandler:
     def __init__(self, path_to_config_file):
         self.path = path_to_config_file
         self.configuration = load_config_file(path_to_config_file)
-        self.data = self.data_loading()
-        self.labels = self.data_processing(self.data)
+        self.raw_image = self.data_loading()
+        self.switched_bytes = None
+        self.formatted = None
+        self.processed_image = None
+        self.labels = None
 
     def data_loading(self):
 
@@ -45,9 +49,10 @@ class DataHandler:
 
     def data_processing(self):
 
-        switched_bytes, formatted = self.data_preprocessing(train_image)
-        bottom, top = np.percentile(train_image, (1, 99))
+        bottom, top = np.percentile(self.data, (1, 99))
         clipped_image = np.clip(switched_bytes, bottom, top)
         normalized_image = exposure.rescale_intensity(clipped_image)
         equalized_image = exposure.equalize_hist(normalized_image)
-        adapt_equalized_image = exposure.equalize_adapthist(equalized_image)
+        self.processed_image = exposure.equalize_adapthist(equalized_image)
+
+
