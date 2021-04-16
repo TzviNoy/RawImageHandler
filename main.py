@@ -65,5 +65,4 @@ if __name__ == "__main__":
 
     plt.plot(saved_loss)
     plt.show()
-    params_array_list = [layer_params.detach().numpy() for layer_params in params]
-    np.savez('net_parameters', params_array_list)
+
