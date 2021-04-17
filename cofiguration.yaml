@@ -1,5 +1,14 @@
-endian : "<u2"
-height, width : 1084, 1920
-x0, x1, y0, y1 : 0, 1280, 3, 1026
-files_location : r"C:\Users\Tzvi\Documents\programming\RawImages"
-file_name : r"00040.raw"
+endian : <u2
+
+dimensions:
+  - 1084
+  - 1920
+
+cut_values:
+  - 0
+  - 1280
+  - 3
+  - 1026
+
+files_location : C:\Users\Tzvi\Documents\programming\RawImages
+file_name : 00040.raw
