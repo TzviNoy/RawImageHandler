@@ -21,6 +21,4 @@ class Trainer:
             loss.backward()
             self.optimizer.step()
 
-        self.model.save("model.pt")
-
-        return saved_loss
+        return saved_loss, self.model

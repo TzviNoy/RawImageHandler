@@ -12,4 +12,6 @@ if __name__ == "__main__":
     criterion = torch.nn.MSELoss(reduction='sum')
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
-    pipeline(path, model, criterion, optimizer, 100)
+    model = pipeline(path, model, criterion, optimizer, 100)
+
+    torch.save(model, "model.pt")
