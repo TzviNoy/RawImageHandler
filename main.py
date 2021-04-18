@@ -6,24 +6,27 @@ from display import display
 
 if __name__ == "__main__":
 
-    mode = "display"
+    mode = {"train": True,
+            "save": False,
+            "display": True}
 
-    if mode == "train":
+    if mode["train"]:
 
-        path = os.path.join(os.getcwd(), "configuration.yaml")
+        train_config_path = "train_config.yaml"
 
         learning_rate = 1e-2
         model = Net()
         criterion = torch.nn.MSELoss(reduction='sum')
         optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
-        trainer = pipeline(path, model, criterion, optimizer, 200)
+        trainer = pipeline(train_config_path, model, criterion, optimizer, 50)
 
-        torch.save(trainer.model, os.path.join(os.getcwd(), "model.pt"))
+        if mode["save"]:
+            torch.save(trainer.model, os.path.join(os.getcwd(), "model.pt"))
 
-    elif mode == "display":
+    if mode["display"]:
 
-        config_path = "display_config.yaml"
+        display_config_path = "display_config.yaml"
         model_path = os.path.join(os.getcwd(), "model.pt")
 
-        display(config_path, model_path)
+        display(display_config_path, model_path)
