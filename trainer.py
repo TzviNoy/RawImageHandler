@@ -3,10 +3,9 @@ class Trainer:
         self.optimizer = optimizer
         self.criterion = criterion
         self.model = net
+        self.saved_loss = []
 
     def train(self, num_of_epochs, data, labels):
-
-        saved_loss = []
 
         for epoch in range(num_of_epochs):
 
@@ -16,9 +15,7 @@ class Trainer:
 
             print(f"After {epoch} epochs, the loss is {loss.item()}")
 
-            saved_loss.append(loss.item())
+            self.saved_loss.append(loss.item())
 
             loss.backward()
             self.optimizer.step()
-
-        return saved_loss, self.model

@@ -10,9 +10,9 @@ def pipeline(path, net, criterion, optimizer, num_of_epochs):
 
     trainer = Trainer(optimizer, criterion, net)
 
-    saved_loss, model = trainer.train(num_of_epochs, data_handler.torch_data["features"], data_handler.torch_data["labels"])
+    trainer.train(num_of_epochs, data_handler.torch_data["features"], data_handler.torch_data["labels"])
 
-    plt.plot(saved_loss)
+    plt.plot(trainer.saved_loss)
     plt.show()
 
-    return model
+    return trainer
